@@ -32,10 +32,10 @@ class SlidersGroup(QGroupBox):
 
     valueChanged = pyqtSignal(int)
 
-    def __init__(self, orientation, title, parent=None):
+    def __init__(self, title, parent=None):
         super(SlidersGroup, self).__init__(title, parent)
 
-        self.slider = QSlider(orientation)
+        self.slider = QSlider(Qt.Horizontal)
         self.slider.setFocusPolicy(Qt.StrongFocus)
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.setTickInterval(10)
@@ -44,13 +44,7 @@ class SlidersGroup(QGroupBox):
         self.slider.valueChanged.connect(self.valueChanged)
 
 
-
-        if orientation == Qt.Horizontal:
-            direction = QBoxLayout.TopToBottom
-        else:
-            direction = QBoxLayout.LeftToRight
-
-        slidersLayout = QBoxLayout(direction)
+        slidersLayout = QBoxLayout(QBoxLayout.TopToBottom)
         slidersLayout.addWidget(self.slider)
         self.setLayout(slidersLayout)    
 
@@ -77,7 +71,7 @@ class Window(QWidget):
     def __init__(self):
         super(Window, self).__init__()
 
-        self.horizontalSliders = SlidersGroup(Qt.Horizontal,"Slider")
+        self.horizontalSliders = SlidersGroup('Slider')
         
 
         self.stackedWidget = QStackedWidget()
