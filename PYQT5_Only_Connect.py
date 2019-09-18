@@ -64,8 +64,12 @@ class Window(QWidget):
     """
     Main window which creates the slider controls via its method and creates the slider instance.
     
+    Attributes:
+        layout: horizontal QBox which stores the controls (left side) and the slider (right side)
+        stackedWidget: widget to hold the slider
+    
     Methods:
-        createControls: creates 3 spinboxes for minimum-, maximum- and current value.
+        createControls: creates 3 spinboxes for minimum-, maximum- and current value of the slider.
     
     """
     def __init__(self):
@@ -81,9 +85,9 @@ class Window(QWidget):
         
         # These lines connect the sliders:
         # moves signal from value spin box (3rd on left side in gui) to the slider
-        self.valueSpinBox.valueChanged.connect(self.horizontalSliders.setValue)
+        self.value_spinbox.valueChanged.connect(self.horizontalSliders.setValue)
         # moves signal back from slider to the spin box
-        self.horizontalSliders.valueChanged.connect(self.valueSpinBox.setValue)
+        self.horizontalSliders.valueChanged.connect(self.value_spinbox.setValue)
         
         
         layout = QHBoxLayout()
@@ -91,51 +95,54 @@ class Window(QWidget):
         layout.addWidget(self.stackedWidget)
         self.setLayout(layout)
 
-        self.minimumSpinBox.setValue(0)
-        self.maximumSpinBox.setValue(20)
-        self.valueSpinBox.setValue(5)
+        self.minimum_spinbox.setValue(0)
+        self.maximum_spinbox.setValue(20)
+        self.value_spinbox.setValue(5)
 
         self.setWindowTitle("Only Connect")
 
     def createControls(self, title):
         """
         Function to create the controls on the left side of the GUI.
+        
+        Attributes:
+            minimum_spinbox: control to set the lower boundary of the slider
+            maximum_spinbox: control to set the upper boundary of the slider
+            value_spinbox: control to set and display the current value of the slider
+            labels: labels for the spinboxes
+            controls_layout: QGrid that sets all the control widgets
+            
         """
         self.controlsGroup = QGroupBox(title)
 
-        minimumLabel = QLabel("Start time:")
-        maximumLabel = QLabel("Stop time:")
-        valueLabel = QLabel("Current value:")
+        minimum_label = QLabel("Start time:")
+        maximum_label = QLabel("Stop time:")
+        value_label = QLabel("Current value:")
 
 
-        self.minimumSpinBox = QSpinBox()
-        self.minimumSpinBox.setRange(-100, 100)
-        self.minimumSpinBox.setSingleStep(1)
+        self.minimum_spinbox = QSpinBox()
+        self.minimum_spinbox.setRange(-100, 100)
+        self.minimum_spinbox.setSingleStep(1)
 
-        self.maximumSpinBox = QSpinBox()
-        self.maximumSpinBox.setRange(-100, 100)
-        self.maximumSpinBox.setSingleStep(1)
+        self.maximum_spinbox = QSpinBox()
+        self.maximum_spinbox.setRange(-100, 100)
+        self.maximum_spinbox.setSingleStep(1)
 
-        self.valueSpinBox = QSpinBox()
-        self.valueSpinBox.setRange(-100, 100)
-        self.valueSpinBox.setSingleStep(1)
+        self.value_spinbox = QSpinBox()
+        self.value_spinbox.setRange(-100, 100)
+        self.value_spinbox.setSingleStep(1)
 
-        orientationCombo = QComboBox()
-        orientationCombo.addItem("Horizontal slider-like widgets")
-        orientationCombo.addItem("Vertical slider-like widgets")
+        self.minimum_spinbox.valueChanged.connect(self.horizontalSliders.setMinimum)
+        self.maximum_spinbox.valueChanged.connect(self.horizontalSliders.setMaximum)
 
-        orientationCombo.activated.connect(self.stackedWidget.setCurrentIndex)
-        self.minimumSpinBox.valueChanged.connect(self.horizontalSliders.setMinimum)
-        self.maximumSpinBox.valueChanged.connect(self.horizontalSliders.setMaximum)
-
-        controlsLayout = QGridLayout()
-        controlsLayout.addWidget(minimumLabel, 0, 0)
-        controlsLayout.addWidget(maximumLabel, 1, 0)
-        controlsLayout.addWidget(valueLabel, 2, 0)
-        controlsLayout.addWidget(self.minimumSpinBox, 0, 1)
-        controlsLayout.addWidget(self.maximumSpinBox, 1, 1)
-        controlsLayout.addWidget(self.valueSpinBox, 2, 1)
-        self.controlsGroup.setLayout(controlsLayout)
+        controls_layout = QGridLayout()
+        controls_layout.addWidget(minimum_label, 0, 0)
+        controls_layout.addWidget(maximum_label, 1, 0)
+        controls_layout.addWidget(value_label, 2, 0)
+        controls_layout.addWidget(self.minimum_spinbox, 0, 1)
+        controls_layout.addWidget(self.maximum_spinbox, 1, 1)
+        controls_layout.addWidget(self.value_spinbox, 2, 1)
+        self.controlsGroup.setLayout(controls_layout)
 
 
 
