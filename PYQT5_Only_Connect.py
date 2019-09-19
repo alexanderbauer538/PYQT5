@@ -9,9 +9,7 @@ Classes:
 """
 
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import (QApplication, QBoxLayout, QComboBox, QTimeEdit,
-        QGridLayout, QGroupBox, QHBoxLayout, QLabel,
-        QSlider, QSpinBox, QStackedWidget, QWidget)
+from PyQt5.QtWidgets import (QApplication, QBoxLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QSlider, QSpinBox, QStackedWidget, QWidget)
 
 
 class SlidersGroup(QGroupBox):
@@ -22,7 +20,7 @@ class SlidersGroup(QGroupBox):
     value of the slider along with a signal telling an event has occured.
     
     Attributes:
-        valueChanged: The signal denoting the the slider has been moved
+        slider_signal: The signal denoting the the slider has been moved
         
     Methods:
         setValue: This changes the current value of the slider
@@ -30,7 +28,7 @@ class SlidersGroup(QGroupBox):
         setMaximum: This sets the upper border of the slider
     """    
 
-    valueChanged = pyqtSignal(int)
+    slider_signal = pyqtSignal(int)
 
     def __init__(self, title, parent=None):
         super(SlidersGroup, self).__init__(title, parent)
@@ -41,12 +39,12 @@ class SlidersGroup(QGroupBox):
         self.slider.setTickInterval(10)
         self.slider.setSingleStep(1)
 
-        self.slider.valueChanged.connect(self.valueChanged)
+        self.slider.valueChanged.connect(self.slider_signal)
 
 
-        slidersLayout = QBoxLayout(QBoxLayout.TopToBottom)
-        slidersLayout.addWidget(self.slider)
-        self.setLayout(slidersLayout)    
+        sliders_layout = QBoxLayout(QBoxLayout.TopToBottom)
+        sliders_layout.addWidget(self.slider)
+        self.setLayout(sliders_layout)    
 
     def setValue(self, value):    
         self.slider.setValue(value)    
@@ -56,8 +54,6 @@ class SlidersGroup(QGroupBox):
 
     def setMaximum(self, value):    
         self.slider.setMaximum(value)
-
-
 
 
 class Window(QWidget):
@@ -75,23 +71,23 @@ class Window(QWidget):
     def __init__(self):
         super(Window, self).__init__()
 
-        self.horizontalSliders = SlidersGroup('Slider')
+        self.horizontal_sliders = SlidersGroup('Slider')
         
 
         self.stackedWidget = QStackedWidget()
-        self.stackedWidget.addWidget(self.horizontalSliders)
+        self.stackedWidget.addWidget(self.horizontal_sliders)
         
-        self.createControls("Controls")
+        self.create_controls("Controls")
         
-        # These lines connect the sliders:
+        # These lines connect the slider to the current value box:
         # moves signal from value spin box (3rd on left side in gui) to the slider
-        self.value_spinbox.valueChanged.connect(self.horizontalSliders.setValue)
+        self.value_spinbox.valueChanged.connect(self.horizontal_sliders.setValue)
         # moves signal back from slider to the spin box
-        self.horizontalSliders.valueChanged.connect(self.value_spinbox.setValue)
+        self.horizontal_sliders.slider_signal.connect(self.value_spinbox.setValue)
         
         
         layout = QHBoxLayout()
-        layout.addWidget(self.controlsGroup)
+        layout.addWidget(self.controls_group)
         layout.addWidget(self.stackedWidget)
         self.setLayout(layout)
 
@@ -101,7 +97,7 @@ class Window(QWidget):
 
         self.setWindowTitle("Only Connect")
 
-    def createControls(self, title):
+    def create_controls(self, title):
         """
         Function to create the controls on the left side of the GUI.
         
@@ -113,7 +109,7 @@ class Window(QWidget):
             controls_layout: QGrid that sets all the control widgets
             
         """
-        self.controlsGroup = QGroupBox(title)
+        self.controls_group = QGroupBox(title)
 
         minimum_label = QLabel("Start time:")
         maximum_label = QLabel("Stop time:")
@@ -132,8 +128,8 @@ class Window(QWidget):
         self.value_spinbox.setRange(-100, 100)
         self.value_spinbox.setSingleStep(1)
 
-        self.minimum_spinbox.valueChanged.connect(self.horizontalSliders.setMinimum)
-        self.maximum_spinbox.valueChanged.connect(self.horizontalSliders.setMaximum)
+        self.minimum_spinbox.valueChanged.connect(self.horizontal_sliders.setMinimum)
+        self.maximum_spinbox.valueChanged.connect(self.horizontal_sliders.setMaximum)
 
         controls_layout = QGridLayout()
         controls_layout.addWidget(minimum_label, 0, 0)
@@ -142,7 +138,7 @@ class Window(QWidget):
         controls_layout.addWidget(self.minimum_spinbox, 0, 1)
         controls_layout.addWidget(self.maximum_spinbox, 1, 1)
         controls_layout.addWidget(self.value_spinbox, 2, 1)
-        self.controlsGroup.setLayout(controls_layout)
+        self.controls_group.setLayout(controls_layout)
 
 
 
