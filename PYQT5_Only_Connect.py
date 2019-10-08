@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Graphical User Interface that demonstrates how to connect a slider to with a separate spin box for the value.
 
@@ -12,7 +11,7 @@ from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import (QApplication, QBoxLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QSlider, QSpinBox, QStackedWidget, QWidget)
 
 
-class SlidersGroup(QGroupBox):
+class sliders_group(QGroupBox):
     """
     Class to create a groupobject that contains the slider.
     
@@ -31,7 +30,7 @@ class SlidersGroup(QGroupBox):
     slider_signal = pyqtSignal(int)
 
     def __init__(self, title, parent=None):
-        super(SlidersGroup, self).__init__(title, parent)
+        super(sliders_group, self).__init__(title, parent)
 
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setFocusPolicy(Qt.StrongFocus)
@@ -46,13 +45,13 @@ class SlidersGroup(QGroupBox):
         sliders_layout.addWidget(self.slider)
         self.setLayout(sliders_layout)    
 
-    def setValue(self, value):    
+    def set_value(self, value):    
         self.slider.setValue(value)    
 
-    def setMinimum(self, value):    
+    def set_minimum(self, value):    
         self.slider.setMinimum(value)
 
-    def setMaximum(self, value):    
+    def set_maximum(self, value):    
         self.slider.setMaximum(value)
 
 
@@ -61,6 +60,7 @@ class Window(QWidget):
     Main window which creates the slider controls via its method and creates the slider instance.
     
     Attributes:
+        horizontal_sliders: instance of the class sliders_group which creates the slider on the right side.
         layout: horizontal QBox which stores the controls (left side) and the slider (right side)
         stackedWidget: widget to hold the slider
     
@@ -71,7 +71,7 @@ class Window(QWidget):
     def __init__(self):
         super(Window, self).__init__()
 
-        self.horizontal_sliders = SlidersGroup('Slider')
+        self.horizontal_sliders = sliders_group('Slider')
         
 
         self.stackedWidget = QStackedWidget()
@@ -81,7 +81,7 @@ class Window(QWidget):
         
         # These lines connect the slider to the current value box:
         # moves signal from value spin box (3rd on left side in gui) to the slider
-        self.value_spinbox.valueChanged.connect(self.horizontal_sliders.setValue)
+        self.value_spinbox.valueChanged.connect(self.horizontal_sliders.set_value)
         # moves signal back from slider to the spin box
         self.horizontal_sliders.slider_signal.connect(self.value_spinbox.setValue)
         
@@ -92,7 +92,7 @@ class Window(QWidget):
         self.setLayout(layout)
 
         self.minimum_spinbox.setValue(0)
-        self.maximum_spinbox.setValue(20)
+        self.maximum_spinbox.setValue(10)
         self.value_spinbox.setValue(5)
 
         self.setWindowTitle("Only Connect")
@@ -128,8 +128,8 @@ class Window(QWidget):
         self.value_spinbox.setRange(-100, 100)
         self.value_spinbox.setSingleStep(1)
 
-        self.minimum_spinbox.valueChanged.connect(self.horizontal_sliders.setMinimum)
-        self.maximum_spinbox.valueChanged.connect(self.horizontal_sliders.setMaximum)
+        self.minimum_spinbox.valueChanged.connect(self.horizontal_sliders.set_minimum)
+        self.maximum_spinbox.valueChanged.connect(self.horizontal_sliders.set_maximum)
 
         controls_layout = QGridLayout()
         controls_layout.addWidget(minimum_label, 0, 0)
